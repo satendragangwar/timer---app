@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    html {
+      background: #010437;
+      margin: 0;
+    }
+
+    body {
+      text-align: center;
+      margin: 0px;
+      padding: 0px;
+
+    }
+
+    form {
+      width: 300px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+    }
+
+    input[type='text'],
+    input[type='submit'] {
+      margin-bottom: 28px;
+      padding: 10px 5px 10px 5px;
+      text-align: center;
+      outline: none;
+      color: white;
+      width: 200px;
+      background: #030caa;
+      border: 1px solid red;
+      border-radius: 50px;
+
+    }
+
+    input[type='text']:focus,
+    input[type='submit']:focus {
+      width: 250px;
+
+
+    }
+
+    .display {
+      font-weight: 100;
+      font-size: 2rem;
+      margin: 0;
+      top: 30%;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <form name="customForm" id="customForm">
+    <input type="text" name="minutes" placeholder="Enter minutes"></br>
+    <input type="submit" name="submit">
+  </form>
+
+  <div class="display">
+    <h1 class="displayTimeLeft"></h1>
+    <p class="displayEndTime"></p>
+  </div>
+
+  <script type="text/javascript">
+    let countdown;
+    const timerDisplay = document.querySelector('.displayTimeLeft');
+    const customForm = document.querySelector('#customForm');
+    const endTime = document.querySelector('.displayEndTime');
+    const button = document.querySelectorAll('[data-time]');
+    button.forEach(button => button.addEventListener('click', startTimer));
+    customForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const mins = this.minutes.value;
+      console.log(mins);
+      timer(mins * 60);
+      this.reset();
+    });
+    function startTimer() {
+      const seconds = parseInt(this.dataset.time);
+      timer(seconds);
+    }
+    function timer(seconds) {
+      clearInterval(countdown);
+      const now = Date.now();
+      const then = now + seconds * 1000;
+      displayTimeLeft(seconds);
+      displayEndTime(then);
+
+      countdown = setInterval(() => {
+        const secondsLeft = Math.round((then - Date.now(
+
+        )) / 1000);
+        if (secondsLeft < 0) {
+          clearInterval(countdown);
+          return;
+        }
+        displayTimeLeft(secondsLeft);
+
+      }, 1000);
+
+    }
+
+    function displayTimeLeft(seconds) {
+      const minutes = Math.floor(
+        seconds / 60
+      );
+      const remainderSeconds = seconds % 60;
+      const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+      document.title = display;
+      timerDisplay.textContent = display;
+    }
+    function displayEndTime(timestamp) {
+      const end = new Date(timestamp);
+      const hour = end.getHours();
+      const adjustedHour = hour > 12 ? hour - 12 : hour;
+      const minutes = end.getMinutes();
+      endTime.textContent = `Be Back at ${adjustedHour}:${minutes < 10 ? '0' : ''}${minutes}`;
+
+    }
+  </script>
+</body>
+
+</html>
